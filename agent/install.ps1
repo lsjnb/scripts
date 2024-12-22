@@ -4,7 +4,7 @@ if($PSVersionTable.PSVersion.Major -lt 5){
     Write-Host "Refer to the community article and install manually! https://nyko.me/2020/12/13/nezha-windows-client.html" -BackgroundColor DarkRed -ForegroundColor Green
     exit
 }
-$agentrepo = "lsjnb666/agent"
+$agentrepo = "lsjnb/agent"
 #  x86 or x64 or arm64
 if ([System.Environment]::Is64BitOperatingSystem) {
     if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
