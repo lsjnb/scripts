@@ -218,10 +218,10 @@ msgstr "重启失败，可能是因为启动时间超过了两秒，请稍后查
 #: nezha/template.sh:477
 msgid ""
 "Fail to obtain Dashboard version, please check if the network can link "
-"https://api.github.com/repos/nezhahq/nezha/releases/latest"
+"https://api.github.com/repos/lsjnb/nezha/releases/latest"
 msgstr ""
 "获取 Dashboard 版本号失败，请检查本机能否链接 https://api.github.com/repos/"
-"nezhahq/nezha/releases/latest"
+"lsjnb/nezha/releases/latest"
 
 #: nezha/template.sh:480
 msgid "The current latest version is: ${_version}"

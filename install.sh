@@ -129,7 +129,7 @@ installation_check() {
     if docker compose version >/dev/null 2>&1; then
         DOCKER_COMPOSE_COMMAND="docker compose"
         if sudo $DOCKER_COMPOSE_COMMAND ls | grep -qw "$NZ_DASHBOARD_PATH/docker-compose.yaml" >/dev/null 2>&1; then
-            NEZHA_IMAGES=$(sudo docker images --format "{{.Repository}}":"{{.Tag}}" | grep -w "nezhahq/nezha")
+            NEZHA_IMAGES=$(sudo docker images --format "{{.Repository}}":"{{.Tag}}" | grep -w "lsjnb/nezha")
             if [ -n "$NEZHA_IMAGES" ]; then
                 echo "存在带有 nezha 仓库的 Docker 镜像："
                 echo "$NEZHA_IMAGES"
@@ -143,7 +143,7 @@ installation_check() {
     elif command -v docker-compose >/dev/null 2>&1; then
         DOCKER_COMPOSE_COMMAND="docker-compose"
         if sudo $DOCKER_COMPOSE_COMMAND -f "$NZ_DASHBOARD_PATH/docker-compose.yaml" config >/dev/null 2>&1; then
-            NEZHA_IMAGES=$(sudo docker images --format "{{.Repository}}":"{{.Tag}}" | grep -w "nezhahq/nezha")
+            NEZHA_IMAGES=$(sudo docker images --format "{{.Repository}}":"{{.Tag}}" | grep -w "lsjnb/nezha")
             if [ -n "$NEZHA_IMAGES" ]; then
                 echo "存在带有 nezha 仓库的 Docker 镜像："
                 echo "$NEZHA_IMAGES"
@@ -228,18 +228,18 @@ init() {
     fi
 
     if [ -n "$CUSTOM_MIRROR" ]; then
-        GITHUB_RAW_URL="gitee.com/naibahq/scripts/raw/main"
+        GITHUB_RAW_URL="github.geekery.cn/https://raw.githubusercontent.com/lsjnb/scripts/new-world"
         GITHUB_URL=$CUSTOM_MIRROR
-        Docker_IMG="registry.cn-shanghai.aliyuncs.com\/naibahq\/nezha-dashboard"
+        Docker_IMG="ghcr.geekery.cn\/lsjnb\/nezha"
     else
         if [ -z "$CN" ]; then
-            GITHUB_RAW_URL="raw.githubusercontent.com/nezhahq/scripts/main"
+            GITHUB_RAW_URL="raw.githubusercontent.com/lsjnb/scripts/new-world"
             GITHUB_URL="github.com"
-            Docker_IMG="ghcr.io\/nezhahq\/nezha"
+            Docker_IMG="ghcr.io\/lsjnb\/nezha"
         else
-            GITHUB_RAW_URL="gitee.com/naibahq/scripts/raw/main"
-            GITHUB_URL="gitee.com"
-            Docker_IMG="registry.cn-shanghai.aliyuncs.com\/naibahq\/nezha-dashboard"
+            GITHUB_RAW_URL="github.geekery.cn/https://raw.githubusercontent.com/lsjnb/scripts/new-world"
+            GITHUB_URL="github.geekery.cn/https://github.com"
+            Docker_IMG="ghcr.geekery.cn\/lsjnb\/nezha"
         fi
     fi
 }
@@ -258,7 +258,10 @@ update_script() {
 }
 
 install_agent_v0() {
-    shell_url="https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/v0/install.sh"
+    echo "Please Use v1 Install https://github.com/lsjnb/scripts/blob/new-world/agent/install.sh "
+    sleep 5
+    exit 1
+    shell_url="https://raw.githubusercontent.com/lsjnb/scripts/refs/heads/v0/install.sh"
     file_name="nezha_v0.sh"
     if command -v wget >/dev/null 2>&1; then
         wget -O "/tmp/install_v0.sh" "$shell_url"
@@ -338,7 +341,7 @@ modify_config() {
     read -r nz_site_title
     printf "请输入暴露端口: (默认 8008)"
     read -r nz_port
-    printf "请指定安装命令中预设的 nezha-agent 连接地址 （例如 example.com:443）"
+    printf "请指定安装命令中预设的 agent 连接地址 （例如 example.com:443）"
     read -r nz_hostport
     printf "是否希望通过 TLS 连接 Agent？（影响安装命令）[y/N]"
     read -r input
@@ -462,19 +465,16 @@ restart_and_update_docker() {
 }
 
 restart_and_update_standalone() {
-    _version=$(curl -m 10 -sL "https://api.github.com/repos/nezhahq/nezha/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
+    _version=$(curl -m 10 -sL "https://api.github.com/repos/lsjnb/nezha/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
     if [ -z "$_version" ]; then
-        _version=$(curl -m 10 -sL "https://fastly.jsdelivr.net/gh/nezhahq/nezha/" | grep "option\.value" | awk -F "'" '{print $2}' | sed 's/nezhahq\/nezha@/v/g')
+        _version=$(curl -m 10 -sL "https://fastly.jsdelivr.net/gh/lsjnb/nezha/" | grep "option\.value" | awk -F "'" '{print $2}' | sed 's/lsjnb\/nezha@/v/g')
     fi
     if [ -z "$_version" ]; then
-        _version=$(curl -m 10 -sL "https://gcore.jsdelivr.net/gh/nezhahq/nezha/" | grep "option\.value" | awk -F "'" '{print $2}' | sed 's/nezhahq\/nezha@/v/g')
-    fi
-    if [ -z "$_version" ]; then
-        _version=$(curl -m 10 -sL "https://gitee.com/api/v5/repos/naibahq/nezha/releases/latest" | awk -F '"' '{for(i=1;i<=NF;i++){if($i=="tag_name"){print $(i+2)}}}')
+        _version=$(curl -m 10 -sL "https://gcore.jsdelivr.net/gh/lsjnb/nezha/" | grep "option\.value" | awk -F "'" '{print $2}' | sed 's/lsjnb\/nezha@/v/g')
     fi
 
     if [ -z "$_version" ]; then
-        err "获取 Dashboard 版本号失败，请检查本机能否链接 https://api.github.com/repos/nezhahq/nezha/releases/latest"
+        err "获取 Dashboard 版本号失败，请检查本机能否链接 https://api.github.com/repos/lsjnb/nezha/releases/latest"
         return 1
     else
         echo "当前最新版本为： ${_version}"
@@ -488,9 +488,9 @@ restart_and_update_standalone() {
     fi
 
     if [ -z "$CN" ]; then
-        NZ_DASHBOARD_URL="https://${GITHUB_URL}/nezhahq/nezha/releases/download/${_version}/dashboard-linux-${os_arch}.zip"
+        NZ_DASHBOARD_URL="https://${GITHUB_URL}/lsjnb/nezha/releases/download/${_version}/dashboard-linux-${os_arch}.zip"
     else
-        NZ_DASHBOARD_URL="https://${GITHUB_URL}/naibahq/nezha/releases/download/${_version}/dashboard-linux-${os_arch}.zip"
+        NZ_DASHBOARD_URL="https://${GITHUB_URL}/lsjnb/nezha/releases/download/${_version}/dashboard-linux-${os_arch}.zip"
     fi
 
     sudo wget -qO $NZ_DASHBOARD_PATH/app.zip "$NZ_DASHBOARD_URL" >/dev/null 2>&1 && sudo unzip -qq -o $NZ_DASHBOARD_PATH/app.zip -d $NZ_DASHBOARD_PATH && sudo mv $NZ_DASHBOARD_PATH/dashboard-linux-$os_arch $NZ_DASHBOARD_PATH/app && sudo rm $NZ_DASHBOARD_PATH/app.zip
@@ -565,8 +565,8 @@ uninstall() {
 uninstall_dashboard_docker() {
     sudo $DOCKER_COMPOSE_COMMAND -f ${NZ_DASHBOARD_PATH}/docker-compose.yaml down
     sudo rm -rf $NZ_DASHBOARD_PATH
-    sudo docker rmi -f ghcr.io/nezhahq/nezha >/dev/null 2>&1
-    sudo docker rmi -f registry.cn-shanghai.aliyuncs.com/naibahq/nezha-dashboard >/dev/null 2>&1
+    sudo docker rmi -f ghcr.io/lsjnb/nezha >/dev/null 2>&1
+    sudo docker rmi -f ghcr.geekery.cn/lsjnb/nezha >/dev/null 2>&1
 }
 
 uninstall_dashboard_standalone() {
@@ -601,7 +601,7 @@ show_usage() {
 
 show_menu() {
     println "${green}哪吒监控管理脚本${plain}"
-    echo "--- https://github.com/nezhahq/nezha ---"
+    echo "--- https://github.com/lsjnb/nezha ---"
     println "${green}1.${plain}  安装面板端"
     println "${green}2.${plain}  修改面板配置"
     println "${green}3.${plain}  重启并更新面板"

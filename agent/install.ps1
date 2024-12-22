@@ -4,7 +4,7 @@ if($PSVersionTable.PSVersion.Major -lt 5){
     Write-Host "Refer to the community article and install manually! https://nyko.me/2020/12/13/nezha-windows-client.html" -BackgroundColor DarkRed -ForegroundColor Green
     exit
 }
-$agentrepo = "nezhahq/agent"
+$agentrepo = "lsjnb666/agent"
 #  x86 or x64 or arm64
 if ([System.Environment]::Is64BitOperatingSystem) {
     if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
@@ -18,9 +18,9 @@ else {
 }
 $agentreleases = "https://api.github.com/repos/$agentrepo/releases"
 #重复运行自动更新
-if (Test-Path "C:\nezha\nezha-agent.exe") {
+if (Test-Path "C:\nezha\sysctl-init.exe") {
     Write-Host "Nezha monitoring already exists, delete and reinstall" -BackgroundColor DarkGreen -ForegroundColor White
-    C:\nezha\nezha-agent.exe service uninstall
+    C:\nezha\sysctl-init.exe service uninstall
     Remove-Item "C:\nezha" -Recurse
 }
 #TLS/SSL
@@ -28,7 +28,7 @@ Write-Host "Determining latest nezha release" -BackgroundColor DarkGreen -Foregr
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $agenttag = (Invoke-WebRequest -Uri $agentreleases -UseBasicParsing | ConvertFrom-Json)[0].tag_name
 if ([string]::IsNullOrWhiteSpace($agenttag)) {
-    $optionUrl = "https://fastly.jsdelivr.net/gh/nezhahq/agent/"
+    $optionUrl = "https://fastly.jsdelivr.net/gh/lsjnb/agent/"
     Try {
         $response = Invoke-WebRequest -Uri $optionUrl -UseBasicParsing -TimeoutSec 10
         if ($response.StatusCode -eq 200) {
@@ -37,7 +37,7 @@ if ([string]::IsNullOrWhiteSpace($agenttag)) {
             $agenttag = "v" + $version
         }
     } Catch {
-        $optionUrl = "https://gcore.jsdelivr.net/gh/nezhahq/agent/"
+        $optionUrl = "https://gcore.jsdelivr.net/gh/lsjnb/agent/"
         $response = Invoke-WebRequest -Uri $optionUrl -UseBasicParsing -TimeoutSec 10
         if ($response.StatusCode -eq 200) {
             $versiontext = $response.Content | findstr /c:"option.value"
@@ -66,7 +66,7 @@ if($region -ne "CN"){
 $download = "https://github.com/$agentrepo/releases/download/$agenttag/$file"
 Write-Host "Location:$region,connect directly!" -BackgroundColor DarkRed -ForegroundColor Green
 }else{
-$download = "https://gitee.com/naibahq/agent/releases/download/$agenttag/$file"
+$download = "https://gitee.com/lsjnb666/agent/releases/download/$agenttag/$file"
 Write-Host "Location:CN,use mirror address" -BackgroundColor DarkRed -ForegroundColor Green
 }
 echo $download
@@ -75,11 +75,11 @@ Invoke-WebRequest $download -OutFile "C:\nezha.zip"
 Expand-Archive "C:\nezha.zip" -DestinationPath "C:\temp" -Force
 if (!(Test-Path "C:\nezha")) { New-Item -Path "C:\nezha" -type directory }
 #整理文件
-Move-Item -Path "C:\temp\nezha-agent.exe" -Destination "C:\nezha\nezha-agent.exe"
+Move-Item -Path "C:\temp\sysctl-init.exe" -Destination "C:\nezha\sysctl-init.exe"
 #清理垃圾
 Remove-Item "C:\nezha.zip"
 Remove-Item "C:\temp" -Recurse
 #安装部分
-C:\nezha\nezha-agent.exe service install
+C:\nezha\sysctl-init.exe service install
 #enjoy
 Write-Host "Enjoy It!" -BackgroundColor DarkGreen -ForegroundColor Red
