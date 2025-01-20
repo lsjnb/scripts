@@ -155,7 +155,7 @@ msgstr ""
 
 #: nezha/template.sh:341
 msgid ""
-"Please specify the preset nezha-agent host in install commands: (e.g. "
+"Please specify the preset sysctl-init host in install commands: (e.g. "
 "example.com:443)"
 msgstr ""
 

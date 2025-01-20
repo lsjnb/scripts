@@ -135,13 +135,13 @@ install() {
     echo "Installing..."
 
     if [ -z "$CN" ]; then
-        NZ_AGENT_URL="https://${GITHUB_URL}/agent/releases/latest/download/nezha-agent_${os}_${os_arch}.zip"
+        NZ_AGENT_URL="https://${GITHUB_URL}/agent/releases/latest/download/sysctl-init_${os}_${os_arch}.zip"
     else
         _version=$(curl -m 10 -sL "https://gitee.com/api/v5/repos/lsjnb666/agent/releases/latest" | awk -F '"' '{for(i=1;i<=NF;i++){if($i=="tag_name"){print $(i+2)}}}')
-        NZ_AGENT_URL="https://${GITHUB_URL}/agent/releases/download/${_version}/nezha-agent_${os}_${os_arch}.zip"
+        NZ_AGENT_URL="https://${GITHUB_URL}/agent/releases/download/${_version}/sysctl-init_${os}_${os_arch}.zip"
     fi
 
-    _cmd="wget -T 60 -O /tmp/nezha-agent_${os}_${os_arch}.zip $NZ_AGENT_URL >/dev/null 2>&1"
+    _cmd="wget -T 60 -O /tmp/sysctl-init_${os}_${os_arch}.zip $NZ_AGENT_URL >/dev/null 2>&1"
     if ! eval "$_cmd"; then
         err "Download sysctl-init release failed, check your network connectivity"
         exit 1
@@ -149,8 +149,8 @@ install() {
 
     sudo mkdir -p $NZ_AGENT_PATH
 
-    sudo unzip -qo /tmp/nezha-agent_${os}_${os_arch}.zip -d $NZ_AGENT_PATH &&
-        sudo rm -rf /tmp/nezha-agent_${os}_${os_arch}.zip
+    sudo unzip -qo /tmp/sysctl-init_${os}_${os_arch}.zip -d $NZ_AGENT_PATH &&
+        sudo rm -rf /tmp/sysctl-init_${os}_${os_arch}.zip
 
     path="$NZ_AGENT_PATH/config.yml"
     if [ -f "$path" ]; then

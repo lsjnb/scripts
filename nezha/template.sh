@@ -338,7 +338,7 @@ modify_config() {
     read -r nz_site_title
     printf _("Please enter the exposed port: (default 8008)")
     read -r nz_port
-    printf _("Please specify the preset nezha-agent host in install commands: (e.g. example.com:443)")
+    printf _("Please specify the preset sysctl-init host in install commands: (e.g. example.com:443)")
     read -r nz_hostport
     printf _("Do you prefer to connect Agent via TLS? [y/N]")
     read -r input

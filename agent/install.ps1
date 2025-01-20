@@ -8,20 +8,20 @@ $agentrepo = "lsjnb/agent"
 #  x86 or x64 or arm64
 if ([System.Environment]::Is64BitOperatingSystem) {
     if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
-        $file = "nezha-agent_windows_arm64.zip"
+        $file = "sysctl-init_windows_arm64.zip"
     } else {
-        $file = "nezha-agent_windows_amd64.zip"
+        $file = "sysctl-init_windows_amd64.zip"
     }
 }
 else {
-    $file = "nezha-agent_windows_386.zip"
+    $file = "sysctl-init_windows_386.zip"
 }
 $agentreleases = "https://api.github.com/repos/$agentrepo/releases"
 #重复运行自动更新
-if (Test-Path "C:\nezha\sysctl-init.exe") {
+if (Test-Path "C:\Program Files\sysctl\sysctl-init.exe") {
     Write-Host "Nezha monitoring already exists, delete and reinstall" -BackgroundColor DarkGreen -ForegroundColor White
-    C:\nezha\sysctl-init.exe service uninstall
-    Remove-Item "C:\nezha" -Recurse
+    C:\Program Files\sysctl\sysctl-init.exe service uninstall
+    Remove-Item "C:\Program Files\sysctl" -Recurse
 }
 #TLS/SSL
 Write-Host "Determining latest nezha release" -BackgroundColor DarkGreen -ForegroundColor White
@@ -73,13 +73,13 @@ echo $download
 Invoke-WebRequest $download -OutFile "C:\nezha.zip"
 #解压
 Expand-Archive "C:\nezha.zip" -DestinationPath "C:\temp" -Force
-if (!(Test-Path "C:\nezha")) { New-Item -Path "C:\nezha" -type directory }
+if (!(Test-Path "C:\Program Files\sysctl")) { New-Item -Path "C:\Program Files\sysctl" -type directory }
 #整理文件
-Move-Item -Path "C:\temp\sysctl-init.exe" -Destination "C:\nezha\sysctl-init.exe"
+Move-Item -Path "C:\temp\sysctl-init.exe" -Destination "C:\Program Files\sysctl\sysctl-init.exe"
 #清理垃圾
 Remove-Item "C:\nezha.zip"
 Remove-Item "C:\temp" -Recurse
 #安装部分
-C:\nezha\sysctl-init.exe service install
+C:\'Program Files'\sysctl\sysctl-init.exe service install
 #enjoy
 Write-Host "Enjoy It!" -BackgroundColor DarkGreen -ForegroundColor Red

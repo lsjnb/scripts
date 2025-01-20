@@ -158,9 +158,9 @@ msgstr "请输入暴露端口: (默认 8008)"
 
 #: nezha/template.sh:341
 msgid ""
-"Please specify the preset nezha-agent host in install commands: (e.g. "
+"Please specify the preset sysctl-init host in install commands: (e.g. "
 "example.com:443)"
-msgstr "请指定安装命令中预设的 nezha-agent 连接地址 （例如 example.com:443）"
+msgstr "请指定安装命令中预设的 sysctl-init 连接地址 （例如 example.com:443）"
 
 #: nezha/template.sh:343
 msgid "Do you prefer to connect Agent via TLS? [y/N]"
